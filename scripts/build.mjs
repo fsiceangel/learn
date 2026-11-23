@@ -76,5 +76,6 @@ for (const app of apps) {
 }
 fs.writeFileSync(path.join(out, 'build-info.json'), JSON.stringify({ version: 1, base, sources: revisions }, null, 2) + '\n')
 fs.writeFileSync(path.join(out, '.nojekyll'), '')
+if (base === '/') fs.writeFileSync(path.join(out, 'CNAME'), 'learn.sorapinkice.top\n')
 validate(out, base)
 console.log('Learning hub is ready in dist/')

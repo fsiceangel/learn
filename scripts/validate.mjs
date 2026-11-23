@@ -34,7 +34,7 @@ export function validate(directory, prefix = '/') {
   for (const file of files) {
     const relative = path.relative(root, file).split(path.sep).join('/')
     if (/\.(?:pdf|sav|db|sqlite|sqlite3)$/i.test(relative) || /(^|\/)(?:\.env(?:\..*)?|\.git|node_modules|server|private-reference|vendor)(\/|$)/.test(relative)) problems.push(`Private/source material in output: ${relative}`)
-    if (/(^|\/)CNAME$/.test(relative)) problems.push(`Unexpected domain binding: ${relative}`)
+    if (/(^|\/)CNAME$/.test(relative) && (relative !== 'CNAME' || prefix !== '/' || fs.readFileSync(file, 'utf8').trim() !== 'learn.sorapinkice.top')) problems.push(`Unexpected domain binding: ${relative}`)
     if (/\.(?:test|spec)\.[cm]?js$/.test(file)) problems.push(`Test file in output: ${relative}`)
     if (!/\.(?:html|css|js|mjs|json|txt)$/.test(file)) continue
     const content = fs.readFileSync(file, 'utf8')
