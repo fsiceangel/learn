@@ -1,0 +1,11 @@
+{
+  "name": "sorapinkice-learning-garden",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test site/saves/*.test.mjs",
+    "validate": "node scripts/validate.mjs"
+  }
+}

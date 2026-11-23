@@ -1,0 +1,16 @@
+name: Check hub
+on: [push, workflow_dispatch]
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/checkout@v4
+        with:
+          repository: fsiceangel/chess-puzzle-training
+          ref: 4df97b7704d32c3039fba183933e2221090a5190
+          path: vendor/chess
+      - run: npm test
