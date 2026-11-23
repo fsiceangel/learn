@@ -4,8 +4,10 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "prepare:sources": "node scripts/prepare.mjs",
     "build": "node scripts/build.mjs",
-    "test": "node --test site/saves/*.test.mjs",
+    "pretest": "node scripts/prepare.mjs --app chess",
+    "test": "node --test scripts/*.test.mjs site/saves/*.test.mjs",
     "validate": "node scripts/validate.mjs"
   }
 }

@@ -132,8 +132,8 @@ test('accepts a real current Chess runtime snapshot including Alpha and in-progr
   globalThis.localStorage = runtimeStore
   globalThis.window = new EventTarget()
   try {
-    const chessRuntime = await import('../../vendor/chess/src/lib/storage.js')
-    const { migrateAlpha } = await import('../../vendor/chess/src/lib/book.js')
+    const chessRuntime = await import('../../.cache/sources/chess/src/lib/storage.js')
+    const { migrateAlpha } = await import('../../.cache/sources/chess/src/lib/book.js')
     chessRuntime.addCoins(500)
     chessRuntime.buy('effects', 'starlight')
     chessRuntime.recordPuzzle({ partId: 'mate-in-one', puzzleId: 'legacy-a', clean: false, seconds: 20 })

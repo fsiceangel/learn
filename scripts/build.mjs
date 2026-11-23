@@ -1,28 +1,13 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import { spawnSync } from 'node:child_process'
 import { validate } from './validate.mjs'
+import { root, apps, sourceDirectory, runNpm, verifySource } from './sources.mjs'
+import { prepareSources } from './prepare.mjs'
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const out = path.join(root, 'dist')
-const apps = ['math', 'chess', 'gushi']
 const base = process.env.LEARN_BASE || '/'
 if (!/^\/(?:[a-zA-Z0-9_-]+\/)*$/.test(base)) throw new Error('LEARN_BASE must be a slash-delimited path, such as / or /learn/')
-const sourcesFile = path.join(root, 'sources.json')
-const sources = fs.existsSync(sourcesFile) ? JSON.parse(fs.readFileSync(sourcesFile, 'utf8')) : {}
-
-function run(command, args, cwd) {
-  const result = spawnSync(command, args, { cwd, stdio: 'inherit', shell: process.platform === 'win32' && command === 'npm' })
-  if (result.error) throw result.error
-  if (result.status !== 0) throw new Error(`${command} failed with exit code ${result.status}`)
-}
-
-function head(cwd) {
-  const result = spawnSync('git', ['-c', 'safe.directory=*', 'rev-parse', 'HEAD'], { cwd, encoding: 'utf8' })
-  if (result.status !== 0 || !/^[0-9a-f]{40}\s*$/i.test(result.stdout)) throw new Error('Could not read source revision')
-  return result.stdout.trim()
-}
+const sources = prepareSources()
 
 function resetOutput() {
   // Only this project's literal dist directory may be recursively removed.
@@ -35,13 +20,11 @@ function resetOutput() {
 
 const revisions = []
 for (const app of apps) {
-  const directory = path.join(root, 'vendor', app)
-  if (!fs.existsSync(path.join(directory, 'node_modules'))) throw new Error(`Install dependencies in vendor/${app} first`)
-  const commit = head(directory)
-  const configured = sources[app]?.commit
-  if (configured && commit !== configured) throw new Error(`${app} source does not match its pinned revision`)
+  const directory = sourceDirectory(app)
+  const commit = verifySource(directory, sources[app])
   console.log(`Building ${app} at ${base}${app}/`)
-  run('npm', ['run', 'build', '--', `--base=${base}${app}/`], directory)
+  runNpm(['run', 'build', '--', `--base=${base}${app}/`], directory)
+  verifySource(directory, sources[app])
   revisions.push({ app, commit, base: `${base}${app}/` })
 }
 
@@ -62,7 +45,8 @@ const navigationCss = `
 fs.writeFileSync(path.join(out, 'learning-nav.css'), navigationCss.trim() + '\n')
 for (const app of apps) {
   const destination = path.join(out, app)
-  fs.cpSync(path.join(root, 'vendor', app, 'dist'), destination, {
+  verifySource(sourceDirectory(app), sources[app])
+  fs.cpSync(path.join(sourceDirectory(app), 'dist'), destination, {
     recursive: true,
     // Old domain bindings and host-wide rewrite rules do not belong under subpaths.
     filter: source => !['CNAME', '_redirects', '_headers', '.nojekyll'].includes(path.basename(source)),

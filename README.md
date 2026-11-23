@@ -2,21 +2,24 @@
 
 [learn.sorapinkice.top](https://learn.sorapinkice.top/)
 
-A shared home for Chinese poetry, MathQuest and Chess Puzzle Training.
+| Repository | Purpose |
+| --- | --- |
+| [learn](https://github.com/fsiceangel/learn) | Shared home, saves and production build |
+| [mathquest](https://github.com/fsiceangel/mathquest) | Math practice |
+| [chess-puzzle-training](https://github.com/fsiceangel/chess-puzzle-training) | Chess practice |
+| [gushi](https://github.com/fsiceangel/gushi) (private) | Chinese poetry |
 
-- `/gushi/` — 古诗词学堂
-- `/math/` — MathQuest
-- `/chess/` — Chess Puzzle Training
-- `/saves/` — local-only `.sav` backup and migration
+```sh
+npm run build
+npm test
+npm run validate
+```
 
-The three apps retain their own data models and repositories. Build inputs are
-pinned in `sources.json`. Clone them into `vendor/<app>/`, check out the pinned
-revision and run `npm ci` in each, then `npm run build` in this repository.
-`LEARN_BASE=/learn/` builds for GitHub Pages' fallback project path.
+Builds use only the pinned GitHub revisions in `sources.json`, prepared under
+`.cache/sources/`; adjacent working copies are never used. Git access to the private
+gushi repository is required. Dirty or mismatched caches are left untouched and rejected.
+`npm run prepare:sources -- --app chess` prepares only the test source.
+`LEARN_BASE=/learn/` supports the fallback path; the default publishes at the custom domain.
 
-Save files include both MathQuest results and unfinished rounds, and the full
-Chess save. Family Sync credentials are deliberately excluded. Import never
-clears the old website: export on the old address, then import on the new one.
-No personal save is stored in this repository or uploaded by the backup page.
-
-Existing application content and artwork retain their original attribution.
+Save files preserve MathQuest progress and unfinished rounds plus the full Chess save.
+Family Sync credentials are excluded. Existing content and artwork retain their attribution.
