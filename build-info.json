@@ -1,21 +1,21 @@
 {
   "version": 1,
-  "base": "/learn/",
+  "base": "/",
   "sources": [
     {
       "app": "math",
       "commit": "29c2ec483e02887eb0168b765f934dec5e621607",
-      "base": "/learn/math/"
+      "base": "/math/"
     },
     {
       "app": "chess",
       "commit": "4df97b7704d32c3039fba183933e2221090a5190",
-      "base": "/learn/chess/"
+      "base": "/chess/"
     },
     {
       "app": "gushi",
       "commit": "e39b63074c4da441300616e11b6f004f063410f0",
-      "base": "/learn/gushi/"
+      "base": "/gushi/"
     }
   ]
 }
